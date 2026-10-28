@@ -45,6 +45,16 @@ const ensureEmail = (email) => {
   return email.startsWith('mailto:') ? email : `mailto:${email}`;
 };
 
+// Resolve public asset paths with Vite base URL for GitHub Pages
+const resolveAsset = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = base.endsWith('/') ? base : `${base}/`;
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${cleanBase}${cleanPath}`;
+};
+
 // Clean Inline SVG Icons matching reference controls
 const HomeIcon = ({ className = "w-4 h-4" }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -467,7 +477,7 @@ export default function App() {
                       
                       {/* Profile Photo */}
                       <img
-                        src={personalInfo.avatarUrl}
+                        src={resolveAsset(personalInfo.avatarUrl)}
                         alt={personalInfo.name}
                         className="w-full h-full object-cover object-center"
                         onError={(e) => {
@@ -716,7 +726,7 @@ export default function App() {
                   {project.image && (
                     <div className="relative w-full aspect-[16/9] sm:h-56 rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-slate-900/50">
                       <img 
-                        src={project.image} 
+                        src={resolveAsset(project.image)} 
                         alt={project.title}
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
