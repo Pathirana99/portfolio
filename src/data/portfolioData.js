@@ -72,43 +72,45 @@ export const projectCategories = [
 export const projects = [
   {
     id: 1,
-    title: "Neural Cloud Orchestrator",
-    category: "backend",
-    image: "/projects/neural-cloud.jpg",
-    description: "High-throughput microservices architecture built with Go and Kubernetes for dynamic serverless scaling.",
-    tech: ["Go", "Kubernetes", "Docker", "gRPC"],
-    github: "https://github.com",
-    live: "https://example.com"
+    title: "Office for Reparations Sri Lanka – Information Management System (IMS)",
+    image: "/projects/orims.jpg",
+    description: "Contributed to the development and maintenance of an enterprise information management system that supports the digital handling of sensitive case records, applicant data, and administrative workflows, proactively resolving workflow and logic issues, improving system stability, and contributing to ongoing feature development to improve the efficiency and transparency of government operations.",
+    tech: ["Java", "Spring Boot", "MySQL", "Enterprise IMS", "Workflows"]
   },
   {
     id: 2,
-    title: "iOS-Grade Design System",
-    category: "frontend",
-    image: "/projects/ios-design.jpg",
-    description: "A component library featuring advanced CSS backdrop filters, smooth spring physics, and fluid glassmorphism.",
-    tech: ["React", "Tailwind CSS", "Vite", "Framer Motion"],
-    github: "https://github.com",
-    live: "https://example.com"
+    title: "Agsafe – Recycling & Operations Information Management System",
+    image: "/projects/dd.jpg",
+    description: "Worked on an enterprise system that supports recycling operations and environmental stewardship programs, allowing for efficient tracking of inventory, operational workflows, and reporting processes. Contributed to the design of system components, workflow automation, and implementation of scalable features to improve overall efficiency.",
+    tech: ["Java", "Spring Boot", "MySQL", "Workflow Automation", "Reporting"]
   },
   {
     id: 3,
-    title: "Distributed KV Store",
-    category: "backend",
-    image: "/projects/distributed-kv.jpg",
-    description: "Fault-tolerant distributed key-value storage engine implementing Raft consensus protocol from scratch.",
-    tech: ["Rust", "Raft", "Distributed Systems", "Tokio"],
-    github: "https://github.com",
-    live: "https://example.com"
+    title: "Ceciliyan – Tea Factory Management System",
+    image: "/projects/ciciliyan.jpg",
+    description: "Developed and maintained the Ceciliyan Tea Factory Management System to streamline employee attendance and daily operational workflows. Contributed to planning and optimizing system flows, implementing new features, and enhancing overall system performance, improving workforce management efficiency and operational accuracy.",
+    tech: ["React", "Node.js", "MySQL", "Workforce Management", "Optimization"]
   },
   {
     id: 4,
-    title: "AI Code Review Assistant",
-    category: "ai",
-    image: "/projects/ai-code-review.jpg",
-    description: "LLM-powered static analysis tool that automatically detects security vulnerabilities and architectural smells.",
-    tech: ["Python", "FastAPI", "OpenAI API", "TypeScript"],
-    github: "https://github.com",
-    live: "https://example.com"
+    title: "Boarding House Reservation System",
+    image: "/projects/bdoor.jpg",
+    description: "Developed a full-stack reservation system using React, Spring Boot, and MySQL for property booking management, implementing scalable backend services, real-time updates, booking functionalities, and email notifications, while designing a responsive UI/UX with advanced search filters and price comparison features to enhance overall user experience.",
+    tech: ["React", "Spring Boot", "MySQL", "REST API", "UI/UX"]
+  },
+  {
+    id: 5,
+    title: "Wallet Web Application",
+    image: "/projects/wallet.jpg",
+    description: "Built a full-stack personal finance web application using React, Spring Boot, and MySQL, developing features for user account management, income and expense tracking, and real-time balance updates, while implementing admin functionalities for managing user profiles and monitoring system data.",
+    tech: ["React", "Spring Boot", "MySQL", "Fintech", "Admin Panel"]
+  },
+  {
+    id: 6,
+    title: "Budget Handling Application",
+    image: "/projects/bjt.jpg",
+    description: "Developed a personal finance mobile application using Flutter and Android Studio, enabling expense and income tracking with calendar integration and detailed financial records, while focusing on usability and intuitive design to enhance user experience and financial management efficiency.",
+    tech: ["Flutter", "Android Studio", "Dart", "Finance Tracking", "Calendar"]
   }
 ];
 

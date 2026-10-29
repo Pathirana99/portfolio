@@ -6,10 +6,10 @@ import {
   Cpu, 
   Globe, 
   Mail, 
-  ExternalLink, 
   Sparkles, 
   Layers, 
   Send,
+  ChevronLeft,
   ChevronRight,
   MapPin,
   Briefcase,
@@ -23,7 +23,6 @@ import {
   navLinks, 
   socialLinks, 
   highlights, 
-  projectCategories, 
   projects, 
   skills,
   experience,
@@ -163,7 +162,9 @@ const LinkedinIcon = ({ className = "w-4 h-4" }) => (
 const iconMap = { Cpu, Layers, Globe };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('all');
+  const [currentProjectPage, setCurrentProjectPage] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
   const [formStatus, setFormStatus] = useState('');
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [statusToast, setStatusToast] = useState('All Systems Operational');
@@ -234,9 +235,43 @@ export default function App() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
-  const filteredProjects = activeTab === 'all' 
-    ? projects 
-    : projects.filter(p => p.category === activeTab);
+  const PROJECTS_PER_PAGE = 4;
+  const totalProjectPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
+  const hasManyProjects = projects.length > PROJECTS_PER_PAGE;
+  const safeProjectPage = Math.min(currentProjectPage, Math.max(0, totalProjectPages - 1));
+  const displayedProjects = projects.slice(
+    safeProjectPage * PROJECTS_PER_PAGE,
+    (safeProjectPage + 1) * PROJECTS_PER_PAGE
+  );
+
+  const handlePrevProjectPage = () => {
+    setCurrentProjectPage((prev) => (prev <= 0 ? totalProjectPages - 1 : prev - 1));
+  };
+
+  const handleNextProjectPage = () => {
+    setCurrentProjectPage((prev) => (prev >= totalProjectPages - 1 ? 0 : prev + 1));
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null) return;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50 && hasManyProjects) {
+      if (diff > 0) {
+        handleNextProjectPage();
+      } else {
+        handlePrevProjectPage();
+      }
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -694,100 +729,123 @@ export default function App() {
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Featured Engineering Works</h2>
               <p className="text-slate-400 text-sm mt-1">High-concurrency systems, distributed storage, and polished interfaces.</p>
             </div>
-            
-            {/* Project Category Filter Pills */}
-            <div className="flex items-center space-x-1 liquid-pill-bar p-1.5 rounded-full self-start sm:self-auto overflow-x-auto">
-              {projectCategories.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium capitalize transition cursor-pointer ${
-                    activeTab === tab.id
-                      ? 'liquid-active-pill font-semibold'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+
+            {hasManyProjects && (
+              <div className="flex items-center space-x-2.5 px-4 py-1.5 rounded-full liquid-pill-bar self-start sm:self-auto text-xs font-semibold text-slate-300">
+                <span className="text-cyan-300 font-bold">Page {safeProjectPage + 1}</span>
+                <span className="text-slate-500">/</span>
+                <span>{totalProjectPages}</span>
+                <span className="text-slate-400 text-[11px] ml-1">({projects.length} Total)</span>
+              </div>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            {filteredProjects.map((project) => (
-              <div 
-                key={project.id} 
-                className="liquid-glass-card rounded-[32px] p-5 sm:p-6 lg:p-7 flex flex-col justify-between space-y-5 relative overflow-hidden group hover:border-cyan-400/40 hover:shadow-[0_20px_40px_-15px_rgba(0,240,255,0.18)] hover:-translate-y-1.5 transition-all duration-300"
+          {/* Carousel Wrapper */}
+          <div 
+            className="relative"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Left Navigation Arrow Button */}
+            {hasManyProjects && (
+              <button
+                type="button"
+                onClick={handlePrevProjectPage}
+                aria-label="Previous projects"
+                title="Previous projects"
+                className="absolute left-1 sm:-left-5 md:-left-6 lg:-left-8 xl:-left-11 2xl:-left-13 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-full bg-[#030914]/95 hover:bg-[#081b38] border-2 border-cyan-400 hover:border-cyan-300 text-cyan-300 hover:text-white shadow-[0_0_22px_rgba(0,240,255,0.6),0_8px_20px_rgba(0,0,0,0.85)] hover:shadow-[0_0_32px_rgba(0,240,255,0.85),0_10px_25px_rgba(0,0,0,0.95)] flex items-center justify-center backdrop-blur-2xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer ring-2 ring-cyan-400/30"
               >
-                <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
+                <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 stroke-[2.75] transition-transform hover:-translate-x-0.5 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
+              </button>
+            )}
 
-                <div className="space-y-4">
-                  {/* Project Cover Image */}
-                  {project.image && (
-                    <div className="relative w-full aspect-[16/9] sm:h-56 rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-slate-900/50">
-                      <img 
-                        src={resolveAsset(project.image)} 
-                        alt={project.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      />
-                      {/* Dark gradient overlay for text contrast and specular depth */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#050e1d]/90 via-[#050e1d]/20 to-transparent pointer-events-none" />
+            {/* Projects Grid (4 displayed at a time) */}
+            <div 
+              key={safeProjectPage}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 lg:gap-6 animate-fade-in"
+            >
+              {displayedProjects.map((project, idx) => (
+                <div 
+                  key={`${project.id}-${idx}`} 
+                  className="liquid-glass-card rounded-2xl sm:rounded-[26px] p-4 sm:p-5 lg:p-5.5 flex flex-col justify-between space-y-3.5 relative overflow-hidden group hover:border-cyan-400/40 hover:shadow-[0_16px_32px_-12px_rgba(0,240,255,0.18)] hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
 
-                      {/* Floating Category Pill */}
-                      <div className="absolute top-3.5 left-3.5 z-10">
-                        <span className="text-[11px] uppercase tracking-wider font-bold px-3 py-1 rounded-full backdrop-blur-md bg-black/50 border border-white/20 text-cyan-300 shadow-sm">
-                          {project.category}
-                        </span>
+                  <div className="space-y-3">
+                    {/* Project Cover Image */}
+                    {project.image && (
+                      <div className="relative w-full aspect-[16/9] sm:h-44 md:h-48 rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 shadow-md bg-slate-900/50">
+                        <img 
+                          src={resolveAsset(project.image)} 
+                          alt={project.title}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = resolveAsset('/projects/neural-cloud.jpg');
+                          }}
+                          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+                        {/* Dark gradient overlay for text contrast and specular depth */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#050e1d]/90 via-[#050e1d]/20 to-transparent pointer-events-none" />
                       </div>
+                    )}
 
-                      {/* Floating Action Links */}
-                      <div className="absolute top-3.5 right-3.5 z-10 flex items-center space-x-2">
-                        <a 
-                          href={project.github} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="w-8.5 h-8.5 rounded-full backdrop-blur-md bg-black/50 border border-white/20 flex items-center justify-center text-slate-200 hover:text-white hover:border-cyan-400/50 hover:bg-black/70 transition shadow-sm"
-                          title="View Source on GitHub"
-                        >
-                          <GithubIcon className="w-4 h-4" />
-                        </a>
-                        <a 
-                          href={project.live} 
-                          target="_blank" 
-                          rel="noreferrer"
-                          className="w-8.5 h-8.5 rounded-full backdrop-blur-md bg-black/50 border border-white/20 flex items-center justify-center text-slate-200 hover:text-white hover:border-cyan-400/50 hover:bg-black/70 transition shadow-sm"
-                          title="Live Deployment"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      </div>
+                    <div className="pt-0.5">
+                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors line-clamp-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-slate-300 text-xs sm:text-sm font-light leading-relaxed mt-1.5 line-clamp-3 sm:line-clamp-4">
+                        {project.description}
+                      </p>
                     </div>
-                  )}
+                  </div>
 
-                  <div className="pt-1">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-slate-300 text-sm font-light leading-relaxed mt-2">
-                      {project.description}
-                    </p>
+                  <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/10">
+                    {project.tech.map((t, tIdx) => (
+                      <span 
+                        key={tIdx} 
+                        className="px-2.5 py-0.5 rounded-lg bg-white/[0.04] text-[10px] sm:text-[11px] font-medium text-slate-300 border border-white/10 group-hover:border-white/20 transition-colors"
+                      >
+                        {t}
+                      </span>
+                    ))}
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
-                  {project.tech.map((t, idx) => (
-                    <span 
-                      key={idx} 
-                      className="px-3 py-1 rounded-xl bg-white/[0.04] text-[11px] font-medium text-slate-300 border border-white/10 group-hover:border-white/20 transition-colors"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+            {/* Right Navigation Arrow Button */}
+            {hasManyProjects && (
+              <button
+                type="button"
+                onClick={handleNextProjectPage}
+                aria-label="Next projects"
+                title="Next projects"
+                className="absolute right-1 sm:-right-5 md:-right-6 lg:-right-8 xl:-right-11 2xl:-right-13 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-full bg-[#030914]/95 hover:bg-[#081b38] border-2 border-cyan-400 hover:border-cyan-300 text-cyan-300 hover:text-white shadow-[0_0_22px_rgba(0,240,255,0.6),0_8px_20px_rgba(0,0,0,0.85)] hover:shadow-[0_0_32px_rgba(0,240,255,0.85),0_10px_25px_rgba(0,0,0,0.95)] flex items-center justify-center backdrop-blur-2xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer ring-2 ring-cyan-400/30"
+              >
+                <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 stroke-[2.75] transition-transform hover:translate-x-0.5 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
+              </button>
+            )}
           </div>
+
+          {/* Pagination Dots Indicator */}
+          {hasManyProjects && (
+            <div className="flex items-center justify-center space-x-2.5 pt-3">
+              {Array.from({ length: totalProjectPages }).map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentProjectPage(idx)}
+                  aria-label={`Go to project page ${idx + 1}`}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    safeProjectPage === idx
+                      ? 'w-8 bg-cyan-400 shadow-[0_0_12px_rgba(0,240,255,0.85)]'
+                      : 'w-2.5 bg-white/20 hover:bg-white/40'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </section>
 
         {/* ==========================================================================
