@@ -20,7 +20,7 @@ export const personalInfo = {
   status: "Available for Full-Stack & Software Engineering Roles",
   headline: "Sunith P Pathirana",
   headlineGradient: "Software Engineer",
-  bio: "Passionate Full-Stack Developer with solid industry and personal project experience, building scalable web applications, robust backend services, and modern interactive digital experiences.",
+  bio: "Motivated and imaginative Software Engineer with a strong foundation in programming languages, software development, and database management. Proficient in a wide range of frameworks and databases, with hands-on experience in designing and developing scalable systems. Adept at collaborating with cross-functional teams to deliver innovative, high-quality solutions. Passionate about leveraging technical expertise to drive organizational success while continuously enhancing professional skills.",
   contactTitle: "Get in touch",
   contactSubtitle: "Have a project in mind or want to discuss engineering opportunities? Drop a message below or reach out directly.",
   footerCopyright: "Sunith P Pathirana. Built with React & Liquid Glassmorphism."
@@ -138,40 +138,53 @@ export const experience = [
   {
     id: 1,
     role: "Software Engineer",
-    company: "E-Life America(US)",
+    company: "E-Life America (US)",
     period: "Present",
     logo: "/companies/elife.jpg",
-    description: "####################################",
-    technologies: ["##########"]
+    points: [
+      "Contributing to the full-stack engineering and ongoing maintenance of an American enterprise ticketing system and scalable healthcare-related platforms.",
+      "Additionally serving as an IT Support Engineer, diagnosing complex system issues, resolving infrastructure workflows, and ensuring optimal platform uptime and reliability.",
+      "Collaborating closely with cross-functional teams to design, optimize, and deploy secure, robust solutions aligned with industry best practices."
+    ]
   },
   {
     id: 2,
     role: "Associate Software Engineer",
     company: "iTerminal Technologies",
-    period: "2026",
+    period: "Nov 2025 – Present",
     logo: "/companies/iterminal.jpg",
-    description: "#######################################################################################################.",
-    technologies: ["Medusa", "AWS", "CI/CD"]
+    points: [
+      "Developed and maintained full-stack applications using Next.js, Nest.js, Spring Boot, React, and MySQL, delivering scalable, secure, and high-performance systems.",
+      "Collaborated with cross-functional teams, leveraging Git, Bitbucket, Jira, and Trello for version control, project management, and API documentation, while following best practices in clean code, testing, and system design.",
+      "Applied strong problem-solving, data structures, and algorithmic thinking to create efficient solutions."
+    ]
   },
   {
     id: 3,
     role: "Software Engineer Intern",
     company: "iTerminal Technologies",
-    period: "2025 - 2026",
+    period: "May 2025 - Nov 2025",
     logo: "/companies/iterminal.jpg",
-    description: "#######################################################################################################.",
-    technologies: ["JavaScript", "TypeScript", "MySQL", "PostgreSQL", "Docker", "Git","Spring-Boot", "React", "TailwindCss", "Next.js", "Nest.js"]
+    points: [
+      "Developed and maintained full-stack applications using Next.js, Nest.js, TypeScript, and MySQL, following industry best practices and coding standards.",
+      "Collaborated with cross-functional teams to design and deliver high-quality features, while actively participating in code reviews, debugging, and performance optimization.",
+      "Utilized tools such as Bitbucket, Jira, Trello, and Swagger for version control, project management, and API documentation to ensure efficient development workflows."
+    ]
   }
 ];
 
 export const education = [
   {
     id: 1,
-    degree: "Degree / Bachelor of Science(Computer Science)",
-    institution: "University of Ruhuna (SriLanka)",
+    degree: "Bachelor of Science",
+    field: "(Computer Science, Mathematics, Physics)",
+    institution: "University of Ruhuna",
     period: "Graduated",
     logo: "/companies/ruhuna.png",
-    description: "#####################################################"
+    points: [
+      "Focused on Computer programming language, Software development, Computer system, Laboratory practice and Projects"
+    ],
+    description: "Focused on Computer programming language, Software development, Computer system, Laboratory practice and Projects"
   }
 ];
 

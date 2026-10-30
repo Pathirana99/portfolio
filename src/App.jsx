@@ -668,27 +668,26 @@ export default function App() {
                     <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
                     
                     <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-between items-start sm:items-stretch">
-                      {/* Left: Role, Company, Description, Tech Stack */}
-                      <div className="flex-1 min-w-0 space-y-4">
+                      {/* Left: Role, Company, and Point-wise Glassy Bullet Descriptions */}
+                      <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
                         <div>
                           <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">{item.role}</h3>
                           <div className="text-sm font-semibold text-cyan-400 mt-0.5">{item.company}</div>
                         </div>
 
-                        <p className="text-slate-300 text-sm font-light leading-relaxed">
-                          {item.description}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 pt-1">
-                          {item.technologies.map((tech, idx) => (
-                            <span 
-                              key={idx} 
-                              className="px-3 py-1 rounded-xl bg-white/[0.04] text-[11px] font-medium text-slate-300 border border-white/10 hover:border-cyan-400/30 hover:text-cyan-200 transition-colors shadow-sm"
-                            >
-                              {tech}
-                            </span>
+                        {/* Creative Point-wise Glassy Bullet Points (tech cards removed) */}
+                        <ul className="space-y-3 pt-1">
+                          {(item.points || (Array.isArray(item.description) ? item.description : [item.description])).map((point, pIdx) => (
+                            <li key={pIdx} className="flex items-start gap-3 group/point">
+                              <span className="liquid-glass-bullet mt-1" aria-hidden="true">
+                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00f0ff] group-hover/point:bg-white group-hover/point:shadow-[0_0_12px_#00f0ff] transition-all duration-300" />
+                              </span>
+                              <span className="text-slate-300 text-sm leading-relaxed font-light group-hover/point:text-white transition-colors duration-200">
+                                {point}
+                              </span>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       </div>
 
                       {/* Right Column: Period at top, Logo centered under it */}
@@ -742,7 +741,7 @@ export default function App() {
                 <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
                 
                 <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-between items-start sm:items-stretch">
-                  {/* Left Column: Degree, Institution, Description */}
+                  {/* Left Column: Degree, Field, Institution, Description */}
                   <div className="flex-1 min-w-0 space-y-4">
                     <div className="flex items-center space-x-3.5">
                       <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 flex-shrink-0">
@@ -750,13 +749,32 @@ export default function App() {
                       </div>
                       <div>
                         <h3 className="text-xl font-bold text-white tracking-tight">{item.degree}</h3>
+                        {item.field && (
+                          <div className="text-sm font-medium text-cyan-300/90 mt-0.5">{item.field}</div>
+                        )}
                         <div className="text-sm font-semibold text-purple-300 mt-0.5">{item.institution}</div>
                       </div>
                     </div>
 
-                    <p className="text-slate-300 text-sm font-light leading-relaxed">
-                      {item.description}
-                    </p>
+                    {/* Point-wise Creative Glassy Bullet or Description */}
+                    {(item.points || (Array.isArray(item.description) ? item.description : null)) ? (
+                      <ul className="space-y-2.5 pt-1">
+                        {(item.points || item.description).map((point, pIdx) => (
+                          <li key={pIdx} className="flex items-start gap-3 group/point">
+                            <span className="liquid-glass-bullet liquid-glass-bullet-purple mt-1" aria-hidden="true">
+                              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_#c084fc] group-hover/point:bg-white group-hover/point:shadow-[0_0_12px_#c084fc] transition-all duration-300" />
+                            </span>
+                            <span className="text-slate-300 text-sm leading-relaxed font-light group-hover/point:text-white transition-colors duration-200">
+                              {point}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-slate-300 text-sm font-light leading-relaxed">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
 
                   {/* Right Column: Period at top, University Logo centered under it (Aligned same as Company Logos) */}
