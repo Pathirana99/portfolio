@@ -140,6 +140,7 @@ export const experience = [
     role: "Software Engineer",
     company: "E-Life America(US)",
     period: "Present",
+    logo: "/companies/elife.jpg",
     description: "####################################",
     technologies: ["##########"]
   },
@@ -148,6 +149,7 @@ export const experience = [
     role: "Associate Software Engineer",
     company: "iTerminal Technologies",
     period: "2026",
+    logo: "/companies/iterminal.jpg",
     description: "#######################################################################################################.",
     technologies: ["Medusa", "AWS", "CI/CD"]
   },
@@ -156,6 +158,7 @@ export const experience = [
     role: "Software Engineer Intern",
     company: "iTerminal Technologies",
     period: "2025 - 2026",
+    logo: "/companies/iterminal.jpg",
     description: "#######################################################################################################.",
     technologies: ["JavaScript", "TypeScript", "MySQL", "PostgreSQL", "Docker", "Git","Spring-Boot", "React", "TailwindCss", "Next.js", "Nest.js"]
   }
@@ -167,6 +170,7 @@ export const education = [
     degree: "Degree / Bachelor of Science(Computer Science)",
     institution: "University of Ruhuna (SriLanka)",
     period: "Graduated",
+    logo: "/companies/ruhuna.png",
     description: "#####################################################"
   }
 ];

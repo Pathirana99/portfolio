@@ -151,6 +151,44 @@ html {
     transform: translateY(-2px);
   }
 
+  /* Liquid Glass Timeline Node Squircle */
+  .liquid-timeline-node {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(14, 29, 62, 0.65) 45%,
+      rgba(5, 14, 29, 0.95) 100%
+    );
+    backdrop-filter: blur(28px) saturate(210%);
+    -webkit-backdrop-filter: blur(28px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 
+      0 12px 32px -5px rgba(2, 6, 18, 0.9),
+      0 0 16px 0 rgba(0, 240, 255, 0.2),
+      inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.7),
+      inset 1px 0 2px 0 rgba(0, 240, 255, 0.25),
+      inset -1px 0 2px 0 rgba(168, 85, 247, 0.25),
+      inset 0 -2px 4px 0 rgba(2, 6, 18, 0.85);
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .liquid-timeline-node:hover,
+  .group:hover .liquid-timeline-node {
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(14, 29, 62, 0.8) 45%,
+      rgba(5, 14, 29, 0.98) 100%
+    );
+    border-color: rgba(0, 240, 255, 0.65);
+    box-shadow: 
+      0 16px 42px -5px rgba(2, 6, 18, 0.95),
+      0 0 28px 0 rgba(0, 240, 255, 0.5),
+      inset 0 2px 1.5px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -2px 5px 0 rgba(2, 6, 18, 0.85);
+    transform: scale(1.06);
+  }
+
   /* Active Electric Blue Pill (like 'All' in screenshot) */
   .liquid-active-pill {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);

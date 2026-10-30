@@ -627,52 +627,97 @@ export default function App() {
         </section>
 
         {/* ==========================================================================
-            Experience Section
+            Experience Section (Liquid Glass Timeline)
             ========================================================================== */}
         <section id="experience" className="space-y-8 scroll-mt-24">
           <div>
-            <span className="text-xs uppercase tracking-wider font-bold px-3.5 py-1.5 rounded-full liquid-active-pill">
-              Career Journey
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-3">Experience</h2>
-            <p className="text-slate-400 text-sm mt-1">Industry track record and practical software development experience.</p>
+            <div className="flex items-center space-x-2 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-2">
+              <span className="w-2 h-2 rounded-full liquid-neon-dot" />
+              <span>Career Journey</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">Experience</h2>
+            <p className="text-slate-400 text-sm mt-1 font-light">Industry track record and practical software development experience.</p>
           </div>
 
-          <div className="space-y-5">
-            {experience.map((item) => (
-              <div 
-                key={item.id}
-                className="liquid-glass-card rounded-[28px] p-7 space-y-4 relative overflow-hidden"
-              >
-                <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
-                
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div>
-                    <h3 className="text-xl font-bold text-white tracking-tight">{item.role}</h3>
-                    <div className="text-sm font-semibold text-cyan-400 mt-0.5">{item.company}</div>
+          <div className="relative">
+            {/* Continuous Vertical Timeline Track */}
+            <div className="absolute left-6 sm:left-7 -translate-x-1/2 top-6 sm:top-7 bottom-6 sm:bottom-7 w-[2px] bg-gradient-to-b from-cyan-400/90 via-indigo-500/60 to-purple-500/30 shadow-[0_0_10px_rgba(0,240,255,0.4)] pointer-events-none rounded-full" />
+
+            <div className="space-y-6 sm:space-y-8">
+              {experience.map((item, index) => (
+                <div 
+                  key={item.id || index}
+                  className="flex items-start gap-4 sm:gap-6 group relative"
+                >
+                  {/* Timeline Squircle Icon Node Column (Always on the exact same horizontal level as the card top) */}
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 z-10 relative">
+                    <div className="liquid-timeline-node w-full h-full rounded-2xl flex items-center justify-center cursor-pointer">
+                      {/* Top Specular Inner Bevel Highlight */}
+                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.14] via-transparent to-transparent pointer-events-none" />
+
+                      {/* Glowing Cyan Briefcase Icon */}
+                      <Briefcase 
+                        className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-300 group-hover:text-cyan-200 transition-colors drop-shadow-[0_0_8px_rgba(0,240,255,0.85)]" 
+                        strokeWidth={2.2} 
+                      />
+                    </div>
                   </div>
-                  <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs font-medium text-slate-300 self-start sm:self-auto">
-                    <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>{item.period}</span>
+
+                  {/* Experience Card (Perfect Liquid Glass, side-by-side with the squircle at the same level) */}
+                  <div className="flex-1 min-w-0 liquid-glass-card rounded-[28px] p-6 sm:p-7 relative overflow-hidden group-hover:border-cyan-400/40 group-hover:shadow-[0_24px_55px_-12px_rgba(0,240,255,0.2)] group-hover:-translate-y-1 transition-all duration-300">
+                    <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
+                    
+                    <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-between items-start sm:items-stretch">
+                      {/* Left: Role, Company, Description, Tech Stack */}
+                      <div className="flex-1 min-w-0 space-y-4">
+                        <div>
+                          <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">{item.role}</h3>
+                          <div className="text-sm font-semibold text-cyan-400 mt-0.5">{item.company}</div>
+                        </div>
+
+                        <p className="text-slate-300 text-sm font-light leading-relaxed">
+                          {item.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          {item.technologies.map((tech, idx) => (
+                            <span 
+                              key={idx} 
+                              className="px-3 py-1 rounded-xl bg-white/[0.04] text-[11px] font-medium text-slate-300 border border-white/10 hover:border-cyan-400/30 hover:text-cyan-200 transition-colors shadow-sm"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Right Column: Period at top, Logo centered under it */}
+                      <div className="flex flex-col items-center self-center sm:self-auto justify-between gap-4 flex-shrink-0 sm:min-w-[140px]">
+                        {/* Period Badge */}
+                        <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs font-medium text-slate-300 shadow-sm">
+                          <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{item.period}</span>
+                        </div>
+
+                        {/* Centered Company Logo */}
+                        {item.logo && (
+                          <div className="my-auto py-2 flex items-center justify-center">
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/95 p-2 border border-white/30 shadow-[0_6px_20px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
+                              <img 
+                                src={resolveAsset(item.logo)} 
+                                alt={`${item.company} logo`} 
+                                className="w-full h-full object-contain"
+                                loading="lazy"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                <p className="text-slate-300 text-sm font-light leading-relaxed">
-                  {item.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {item.technologies.map((tech, idx) => (
-                    <span 
-                      key={idx} 
-                      className="px-3 py-1 rounded-xl bg-white/[0.04] text-[11px] font-medium text-slate-300 border border-white/10"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
@@ -692,29 +737,51 @@ export default function App() {
             {education.map((item) => (
               <div 
                 key={item.id}
-                className="liquid-glass-card rounded-[28px] p-7 space-y-4 relative overflow-hidden"
+                className="liquid-glass-card rounded-[28px] p-6 sm:p-7 relative overflow-hidden group-hover:border-purple-400/40 group-hover:shadow-[0_24px_55px_-12px_rgba(168,85,247,0.2)] group-hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
                 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex items-center space-x-3.5">
-                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
-                      <GraduationCap className="w-6 h-6" />
+                <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-between items-start sm:items-stretch">
+                  {/* Left Column: Degree, Institution, Description */}
+                  <div className="flex-1 min-w-0 space-y-4">
+                    <div className="flex items-center space-x-3.5">
+                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 flex-shrink-0">
+                        <GraduationCap className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white tracking-tight">{item.degree}</h3>
+                        <div className="text-sm font-semibold text-purple-300 mt-0.5">{item.institution}</div>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white tracking-tight">{item.degree}</h3>
-                      <div className="text-sm font-semibold text-purple-300 mt-0.5">{item.institution}</div>
-                    </div>
+
+                    <p className="text-slate-300 text-sm font-light leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
-                  <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs font-medium text-slate-300 self-start sm:self-auto">
-                    <Calendar className="w-3.5 h-3.5 text-purple-400" />
-                    <span>{item.period}</span>
+
+                  {/* Right Column: Period at top, University Logo centered under it (Aligned same as Company Logos) */}
+                  <div className="flex flex-col items-center self-center sm:self-auto justify-between gap-4 flex-shrink-0 sm:min-w-[140px]">
+                    {/* Period Badge */}
+                    <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs font-medium text-slate-300 shadow-sm">
+                      <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                      <span>{item.period}</span>
+                    </div>
+
+                    {/* Centered University Logo */}
+                    {item.logo && (
+                      <div className="my-auto py-2 flex items-center justify-center">
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] backdrop-blur-xl p-2 border border-white/20 shadow-[0_6px_20px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden hover:scale-105 hover:border-amber-400/40 transition-all duration-300">
+                          <img 
+                            src={resolveAsset(item.logo)} 
+                            alt={`${item.institution} logo`} 
+                            className="w-full h-full object-contain drop-shadow-[0_2px_10px_rgba(245,158,11,0.45)]"
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                <p className="text-slate-300 text-sm font-light leading-relaxed">
-                  {item.description}
-                </p>
               </div>
             ))}
           </div>
