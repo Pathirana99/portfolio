@@ -15,7 +15,9 @@ import {
   Briefcase,
   GraduationCap,
   Calendar,
-  ArrowUpRight
+  ArrowUpRight,
+  Menu,
+  X
 } from 'lucide-react';
 import { THEMES, DEFAULT_THEME_ID } from './config/themes';
 import { 
@@ -167,6 +169,7 @@ export default function App() {
   const [touchEndX, setTouchEndX] = useState(null);
   const [formStatus, setFormStatus] = useState('');
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [statusToast, setStatusToast] = useState('All Systems Operational');
   const [showToast, setShowToast] = useState(false);
 
@@ -354,35 +357,44 @@ export default function App() {
       )}
 
       {/* ==========================================================================
-          Top Bar (Exact Match to Screenshot)
+          Top Bar (Liquid Glass Header - Mobile & Desktop Responsive)
           ========================================================================== */}
-      <header className="sticky top-4 z-40 max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-2 transition-all duration-300">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+      <header className="sticky top-2.5 sm:top-4 z-40 max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-12 pt-1 sm:pt-2 transition-all duration-300">
+        <div className="flex items-center justify-between gap-2 sm:gap-3">
           
-          {/* Top Left: Navigation Links [ Home | About | Skills | Projects ] */}
-          <nav className="flex items-center space-x-1 liquid-pill-bar p-1.5 rounded-full shadow-lg">
+          {/* Mobile Left: Brand Pill Badge (Hidden on md+) */}
+          <a 
+            href="#home" 
+            className="md:hidden liquid-pill-bar px-3 py-1.5 rounded-full flex items-center space-x-1.5 text-xs font-bold text-white shadow-lg border border-white/10 flex-shrink-0"
+          >
+            <span className="w-2 h-2 rounded-full liquid-neon-dot" />
+            <span className="tracking-tight">Sunith<span className="text-cyan-400">.dev</span></span>
+          </a>
+
+          {/* Desktop Left: Navigation Links [ Home | About | Experience | Education | Skills | Projects ] */}
+          <nav className="hidden md:flex items-center space-x-1 liquid-pill-bar p-1.5 rounded-full shadow-lg">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="px-3.5 sm:px-4 lg:px-5 py-1.5 lg:py-2 rounded-full text-xs lg:text-sm font-semibold text-slate-300 hover:text-white transition cursor-pointer hover:bg-white/5"
+                className="px-3 sm:px-3.5 lg:px-5 py-1.5 lg:py-2 rounded-full text-xs lg:text-sm font-semibold text-slate-300 hover:text-white transition cursor-pointer hover:bg-white/5"
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* Top Right: Theme Switcher Disc & Connect Button */}
-          <div className="flex items-center space-x-2">
+          {/* Top Right: Theme Switcher Disc, Connect Button, and Mobile Hamburger */}
+          <div className="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
             
             {/* Theme Switcher Disc */}
             <div className="relative">
               <button
                 onClick={() => setThemeMenuOpen(!themeMenuOpen)}
-                className="liquid-disc w-11 h-11 rounded-full flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+                className="liquid-disc w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
                 title="Change Color Theme"
               >
-                <PaletteIcon className="w-4 h-4" />
+                <PaletteIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
 
               {themeMenuOpen && (
@@ -423,27 +435,60 @@ export default function App() {
             {/* Connect -> Button */}
             <a 
               href="#contact" 
-              className="theme-btn-connect px-5 py-2.5 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-lg tracking-wide"
+              className="theme-btn-connect px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold flex items-center space-x-1 sm:space-x-1.5 shadow-lg tracking-wide"
             >
               <span>Connect</span>
-              <span className="text-sm font-bold">→</span>
+              <span className="text-xs sm:text-sm font-bold">→</span>
             </a>
+
+            {/* Mobile Navigation Drawer Toggle (Hidden on md+) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden liquid-disc w-9 h-9 rounded-full flex items-center justify-center text-slate-300 hover:text-white cursor-pointer"
+              title="Toggle Menu"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4 text-cyan-400" /> : <Menu className="w-4 h-4" />}
+            </button>
 
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu Drawer */}
+        {mobileMenuOpen && (
+          <>
+            <div className="fixed inset-0 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />
+            <div className="relative md:hidden mt-2 p-2 rounded-3xl liquid-glass border border-white/20 shadow-2xl flex flex-col gap-1 z-50 animate-fade-in backdrop-blur-3xl">
+              <div className="text-[10px] uppercase font-bold text-slate-400 px-3 py-1 tracking-wider">
+                Navigate
+              </div>
+              {navLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3.5 py-2 rounded-2xl text-xs font-semibold text-slate-200 hover:text-white hover:bg-white/10 transition flex items-center justify-between"
+                >
+                  <span>{link.label}</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-cyan-400/70" />
+                </a>
+              ))}
+            </div>
+          </>
+        )}
       </header>
 
       {/* ==========================================================================
           Main Content Container
           ========================================================================== */}
-      <main className="max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-12 relative z-10 space-y-20 lg:space-y-28 xl:space-y-36">
+      <main className="max-w-5xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 xl:px-12 pt-6 sm:pt-12 relative z-10 space-y-16 sm:space-y-20 lg:space-y-28 xl:space-y-36">
         
         {/* ==========================================================================
             Home Section (Landing Page: Full Viewport Hero - Ambient Water Droplet Wave Animation)
             ========================================================================== */}
         <section 
           id="home" 
-          className="min-h-[calc(100vh-6.5rem)] flex flex-col items-center justify-center text-center pb-12 scroll-mt-24 relative overflow-hidden select-none"
+          className="min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-6.5rem)] flex flex-col items-center justify-center text-center pb-8 sm:pb-12 scroll-mt-24 relative overflow-hidden select-none"
         >
           {/* Ambient Concentric Water Droplet Wave Rings Expanding in Background */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 flex items-center justify-center opacity-40">
@@ -459,13 +504,13 @@ export default function App() {
             secondaryColor={activeThemeConfig.tertiaryColor || '#a855f7'}
           />
 
-          <div className="relative z-10 space-y-4 max-w-4xl mx-auto px-4 pointer-events-auto">
-            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full liquid-pill-bar text-xs font-semibold text-slate-300 shadow-lg border border-cyan-500/20 mb-1">
+          <div className="relative z-10 space-y-3.5 sm:space-y-4 max-w-4xl mx-auto px-2 sm:px-4 pointer-events-auto">
+            <div className="inline-flex items-center space-x-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full liquid-pill-bar text-[11px] sm:text-xs font-semibold text-slate-300 shadow-lg border border-cyan-500/20 mb-1">
               <span className="w-2 h-2 rounded-full liquid-neon-dot" />
               <span>Full-Stack &amp; Systems Engineer</span>
             </div>
             
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight break-words">
               {personalInfo.headline} <br />
               <span className="theme-text-gradient drop-shadow-[0_0_35px_rgba(0,240,255,0.45)]">
                 {personalInfo.headlineGradient}
@@ -473,17 +518,17 @@ export default function App() {
             </h1>
 
             {/* Subtle Action Buttons */}
-            <div className="pt-4 flex items-center justify-center gap-3">
+            <div className="pt-3 sm:pt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
               <a 
                 href="#about"
-                className="px-6 py-2.5 rounded-full theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-1.5 cursor-pointer shadow-lg"
+                className="px-5 sm:px-6 py-2.5 rounded-full theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-1.5 cursor-pointer shadow-lg"
               >
                 <span>About Me</span>
                 <ChevronRight className="w-4 h-4" />
               </a>
               <a 
                 href="#projects"
-                className="liquid-disc px-5 py-2.5 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-1.5 cursor-pointer hover:text-white"
+                className="liquid-disc px-4.5 sm:px-5 py-2.5 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-1.5 cursor-pointer hover:text-white"
               >
                 <span>Explore Projects</span>
               </a>
@@ -494,17 +539,17 @@ export default function App() {
         {/* ==========================================================================
             About Section
             ========================================================================== */}
-        <section id="about" className="space-y-8 scroll-mt-24">
+        <section id="about" className="space-y-6 sm:space-y-8 scroll-mt-24">
           
           {/* About Overview Card with Sunith's Profile Image */}
-          <div className="liquid-glass rounded-[32px] p-6 sm:p-10 lg:p-12 xl:p-14 relative overflow-hidden">
+          <div className="liquid-glass rounded-2xl sm:rounded-[32px] p-5 sm:p-10 lg:p-12 xl:p-14 relative overflow-hidden">
             <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
             
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-14 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 xl:gap-14 items-center">
               
               {/* Left Column: Profile Picture Card in About Section */}
               <div className="lg:col-span-5 xl:col-span-4 flex justify-center">
-                <div className="relative group w-full max-w-[280px] sm:max-w-[320px] lg:max-w-none">
+                <div className="relative group w-full max-w-[240px] sm:max-w-[320px] lg:max-w-none">
                   
                   {/* Outer Liquid Glass Frame */}
                   <div className="liquid-avatar-frame aspect-square w-full transition-transform duration-500 group-hover:scale-[1.02]">
@@ -546,46 +591,46 @@ export default function App() {
               </div>
 
               {/* Right Column: Bio, Header, Availability, Chips, and Action Buttons */}
-              <div className="lg:col-span-7 xl:col-span-8 space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="lg:col-span-7 xl:col-span-8 space-y-5 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                   <div>
                     <span className="text-xs uppercase tracking-wider font-bold px-3.5 py-1.5 rounded-full liquid-active-pill">
                       About Me
                     </span>
-                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-3">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-2.5 sm:mt-3">
                       Passionate Software Developer
                     </h2>
                   </div>
                   
                   {/* Availability pill with green dot */}
-                  <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full liquid-pill-bar text-xs font-medium shadow-inner border border-cyan-500/25 self-start sm:self-auto">
+                  <div className="inline-flex items-center space-x-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full liquid-pill-bar text-xs font-medium shadow-inner border border-cyan-500/25 self-start sm:self-auto">
                     <span className="w-2 h-2 rounded-full liquid-neon-dot" />
                     <span className="text-slate-300">{personalInfo.status}</span>
                   </div>
                 </div>
 
                 {/* Bio text */}
-                <p className="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
+                <p className="text-slate-300 text-sm sm:text-base lg:text-lg font-light leading-relaxed">
                   {personalInfo.bio}
                 </p>
 
                 {/* Location & Role Chips */}
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300 font-medium">
-                  <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10">
-                    <Briefcase className="w-4 h-4 text-cyan-400" />
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs text-slate-300 font-medium">
+                  <div className="flex items-center space-x-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10">
+                    <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
                     <span>{personalInfo.role}</span>
                   </div>
-                  <div className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10">
-                    <MapPin className="w-4 h-4 text-cyan-400" />
+                  <div className="flex items-center space-x-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10">
+                    <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
                     <span>{personalInfo.location}</span>
                   </div>
                 </div>
 
                 {/* Connect & Social Action Buttons */}
-                <div className="flex items-center flex-wrap gap-4 pt-4 border-t border-white/10">
+                <div className="flex items-center flex-wrap gap-2.5 sm:gap-4 pt-3 sm:pt-4 border-t border-white/10">
                   <a 
                     href="#projects" 
-                    className="px-7 py-3 rounded-full theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-2 cursor-pointer shadow-xl tracking-wide"
+                    className="px-5 sm:px-7 py-2.5 sm:py-3 rounded-full theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-2 cursor-pointer shadow-xl tracking-wide"
                   >
                     <ArrowUpRight className="w-4 h-4" />
                     <span>Explore Portfolio</span>
@@ -595,9 +640,9 @@ export default function App() {
                     href={ensureUrl(socialLinks.github)} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="liquid-disc px-5 py-3 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-2 cursor-pointer hover:text-white"
+                    className="liquid-disc px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 cursor-pointer hover:text-white"
                   >
-                    <GithubIcon className="w-4 h-4" />
+                    <GithubIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>GitHub</span>
                   </a>
 
@@ -605,18 +650,18 @@ export default function App() {
                     href={ensureUrl(socialLinks.linkedin)} 
                     target="_blank" 
                     rel="noreferrer"
-                    className="liquid-disc px-5 py-3 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-2 cursor-pointer hover:text-white"
+                    className="liquid-disc px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 cursor-pointer hover:text-white"
                   >
-                    <LinkedinIcon className="w-4 h-4" />
+                    <LinkedinIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>LinkedIn</span>
                   </a>
 
                   <a 
                     href={ensureEmail(socialLinks.email)} 
-                    className="liquid-disc px-5 py-3 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-2 cursor-pointer hover:text-white"
+                    className="liquid-disc px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-1.5 sm:space-x-2 cursor-pointer hover:text-white"
                     title="Send Email"
                   >
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>Email</span>
                   </a>
                 </div>
@@ -629,60 +674,60 @@ export default function App() {
         {/* ==========================================================================
             Experience Section (Liquid Glass Timeline)
             ========================================================================== */}
-        <section id="experience" className="space-y-8 scroll-mt-24">
+        <section id="experience" className="space-y-6 sm:space-y-8 scroll-mt-24">
           <div>
             <div className="flex items-center space-x-2 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-2">
               <span className="w-2 h-2 rounded-full liquid-neon-dot" />
               <span>Career Journey</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">Experience</h2>
-            <p className="text-slate-400 text-sm mt-1 font-light">Industry track record and practical software development experience.</p>
+            <p className="text-slate-400 text-xs sm:text-sm mt-1 font-light">Industry track record and practical software development experience.</p>
           </div>
 
           <div className="relative">
             {/* Continuous Vertical Timeline Track */}
-            <div className="absolute left-6 sm:left-7 -translate-x-1/2 top-6 sm:top-7 bottom-6 sm:bottom-7 w-[2px] bg-gradient-to-b from-cyan-400/90 via-indigo-500/60 to-purple-500/30 shadow-[0_0_10px_rgba(0,240,255,0.4)] pointer-events-none rounded-full" />
+            <div className="absolute left-5 sm:left-7 -translate-x-1/2 top-5 sm:top-7 bottom-5 sm:bottom-7 w-[2px] bg-gradient-to-b from-cyan-400/90 via-indigo-500/60 to-purple-500/30 shadow-[0_0_10px_rgba(0,240,255,0.4)] pointer-events-none rounded-full" />
 
-            <div className="space-y-6 sm:space-y-8">
+            <div className="space-y-5 sm:space-y-8">
               {experience.map((item, index) => (
                 <div 
                   key={item.id || index}
-                  className="flex items-start gap-4 sm:gap-6 group relative"
+                  className="flex items-start gap-3 sm:gap-6 group relative"
                 >
-                  {/* Timeline Squircle Icon Node Column (Always on the exact same horizontal level as the card top) */}
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 z-10 relative">
-                    <div className="liquid-timeline-node w-full h-full rounded-2xl flex items-center justify-center cursor-pointer">
+                  {/* Timeline Squircle Icon Node Column */}
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 flex-shrink-0 z-10 relative">
+                    <div className="liquid-timeline-node w-full h-full rounded-xl sm:rounded-2xl flex items-center justify-center cursor-pointer">
                       {/* Top Specular Inner Bevel Highlight */}
-                      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.14] via-transparent to-transparent pointer-events-none" />
+                      <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-br from-white/[0.14] via-transparent to-transparent pointer-events-none" />
 
                       {/* Glowing Cyan Briefcase Icon */}
                       <Briefcase 
-                        className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-300 group-hover:text-cyan-200 transition-colors drop-shadow-[0_0_8px_rgba(0,240,255,0.85)]" 
+                        className="w-4 h-4 sm:w-6 sm:h-6 text-cyan-300 group-hover:text-cyan-200 transition-colors drop-shadow-[0_0_8px_rgba(0,240,255,0.85)]" 
                         strokeWidth={2.2} 
                       />
                     </div>
                   </div>
 
-                  {/* Experience Card (Perfect Liquid Glass, side-by-side with the squircle at the same level) */}
-                  <div className="flex-1 min-w-0 liquid-glass-card rounded-[28px] p-6 sm:p-7 relative overflow-hidden group-hover:border-cyan-400/40 group-hover:shadow-[0_24px_55px_-12px_rgba(0,240,255,0.2)] group-hover:-translate-y-1 transition-all duration-300">
+                  {/* Experience Card */}
+                  <div className="flex-1 min-w-0 liquid-glass-card rounded-2xl sm:rounded-[28px] p-4 sm:p-7 relative overflow-hidden group-hover:border-cyan-400/40 group-hover:shadow-[0_24px_55px_-12px_rgba(0,240,255,0.2)] group-hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
                     
-                    <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-between items-start sm:items-stretch">
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-between items-start sm:items-stretch">
                       {/* Left: Role, Company, and Point-wise Glassy Bullet Descriptions */}
                       <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
                         <div>
-                          <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">{item.role}</h3>
-                          <div className="text-sm font-semibold text-cyan-400 mt-0.5">{item.company}</div>
+                          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">{item.role}</h3>
+                          <div className="text-xs sm:text-sm font-semibold text-cyan-400 mt-0.5">{item.company}</div>
                         </div>
 
-                        {/* Creative Point-wise Glassy Bullet Points (tech cards removed) */}
-                        <ul className="space-y-3 pt-1">
+                        {/* Creative Point-wise Glassy Bullet Points */}
+                        <ul className="space-y-2.5 sm:space-y-3 pt-1">
                           {(item.points || (Array.isArray(item.description) ? item.description : [item.description])).map((point, pIdx) => (
-                            <li key={pIdx} className="flex items-start gap-3 group/point">
+                            <li key={pIdx} className="flex items-start gap-2.5 sm:gap-3 group/point">
                               <span className="liquid-glass-bullet mt-1" aria-hidden="true">
                                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00f0ff] group-hover/point:bg-white group-hover/point:shadow-[0_0_12px_#00f0ff] transition-all duration-300" />
                               </span>
-                              <span className="text-slate-300 text-sm leading-relaxed font-light group-hover/point:text-white transition-colors duration-200">
+                              <span className="text-slate-300 text-xs sm:text-sm leading-relaxed font-light group-hover/point:text-white transition-colors duration-200">
                                 {point}
                               </span>
                             </li>
@@ -690,18 +735,18 @@ export default function App() {
                         </ul>
                       </div>
 
-                      {/* Right Column: Period at top, Logo centered under it */}
-                      <div className="flex flex-col items-center self-center sm:self-auto justify-between gap-4 flex-shrink-0 sm:min-w-[140px]">
+                      {/* Right Column: Period & Logo (Centered on desktop, side-by-side footer on mobile) */}
+                      <div className="flex sm:flex-col items-center justify-between sm:justify-between w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10 gap-3 sm:gap-4 flex-shrink-0 sm:min-w-[140px]">
                         {/* Period Badge */}
-                        <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs font-medium text-slate-300 shadow-sm">
-                          <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                        <div className="inline-flex items-center space-x-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-[11px] sm:text-xs font-medium text-slate-300 shadow-sm">
+                          <Calendar className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-cyan-400" />
                           <span>{item.period}</span>
                         </div>
 
-                        {/* Centered Company Logo */}
+                        {/* Company Logo */}
                         {item.logo && (
-                          <div className="my-auto py-2 flex items-center justify-center">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/95 p-2 border border-white/30 shadow-[0_6px_20px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
+                          <div className="sm:my-auto sm:py-2 flex items-center justify-center">
+                            <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-white/95 p-1.5 sm:p-2 border border-white/30 shadow-[0_6px_20px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
                               <img 
                                 src={resolveAsset(item.logo)} 
                                 alt={`${item.company} logo`} 
@@ -723,36 +768,36 @@ export default function App() {
         {/* ==========================================================================
             Education Section
             ========================================================================== */}
-        <section id="education" className="space-y-8 scroll-mt-24">
+        <section id="education" className="space-y-6 sm:space-y-8 scroll-mt-24">
           <div>
             <span className="text-xs uppercase tracking-wider font-bold px-3.5 py-1.5 rounded-full liquid-active-pill">
               Education
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-3">Academic Background</h2>
-            <p className="text-slate-400 text-sm mt-1">Foundational knowledge in computing, engineering, and system design.</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-2.5 sm:mt-3">Academic Background</h2>
+            <p className="text-slate-400 text-xs sm:text-sm mt-1">Foundational knowledge in computing, engineering, and system design.</p>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             {education.map((item) => (
               <div 
                 key={item.id}
-                className="liquid-glass-card rounded-[28px] p-6 sm:p-7 relative overflow-hidden group-hover:border-purple-400/40 group-hover:shadow-[0_24px_55px_-12px_rgba(168,85,247,0.2)] group-hover:-translate-y-1 transition-all duration-300"
+                className="liquid-glass-card rounded-2xl sm:rounded-[28px] p-4 sm:p-7 relative overflow-hidden group-hover:border-purple-400/40 group-hover:shadow-[0_24px_55px_-12px_rgba(168,85,247,0.2)] group-hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
                 
-                <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 justify-between items-start sm:items-stretch">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-between items-start sm:items-stretch">
                   {/* Left Column: Degree, Field, Institution, Description */}
-                  <div className="flex-1 min-w-0 space-y-4">
-                    <div className="flex items-center space-x-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 flex-shrink-0">
-                        <GraduationCap className="w-6 h-6" />
+                  <div className="flex-1 min-w-0 space-y-3 sm:space-y-4">
+                    <div className="flex items-center space-x-3 sm:space-x-3.5">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 flex-shrink-0">
+                        <GraduationCap className="w-4.5 h-4.5 sm:w-6 sm:h-6" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white tracking-tight">{item.degree}</h3>
+                        <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">{item.degree}</h3>
                         {item.field && (
-                          <div className="text-sm font-medium text-cyan-300/90 mt-0.5">{item.field}</div>
+                          <div className="text-xs sm:text-sm font-medium text-cyan-300/90 mt-0.5">{item.field}</div>
                         )}
-                        <div className="text-sm font-semibold text-purple-300 mt-0.5">{item.institution}</div>
+                        <div className="text-xs sm:text-sm font-semibold text-purple-300 mt-0.5">{item.institution}</div>
                       </div>
                     </div>
 
@@ -760,35 +805,35 @@ export default function App() {
                     {(item.points || (Array.isArray(item.description) ? item.description : null)) ? (
                       <ul className="space-y-2.5 pt-1">
                         {(item.points || item.description).map((point, pIdx) => (
-                          <li key={pIdx} className="flex items-start gap-3 group/point">
+                          <li key={pIdx} className="flex items-start gap-2.5 sm:gap-3 group/point">
                             <span className="liquid-glass-bullet liquid-glass-bullet-purple mt-1" aria-hidden="true">
                               <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_#c084fc] group-hover/point:bg-white group-hover/point:shadow-[0_0_12px_#c084fc] transition-all duration-300" />
                             </span>
-                            <span className="text-slate-300 text-sm leading-relaxed font-light group-hover/point:text-white transition-colors duration-200">
+                            <span className="text-slate-300 text-xs sm:text-sm leading-relaxed font-light group-hover/point:text-white transition-colors duration-200">
                               {point}
                             </span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-slate-300 text-sm font-light leading-relaxed">
+                      <p className="text-slate-300 text-xs sm:text-sm font-light leading-relaxed">
                         {item.description}
                       </p>
                     )}
                   </div>
 
-                  {/* Right Column: Period at top, University Logo centered under it (Aligned same as Company Logos) */}
-                  <div className="flex flex-col items-center self-center sm:self-auto justify-between gap-4 flex-shrink-0 sm:min-w-[140px]">
+                  {/* Right Column: Period & University Logo (Centered on desktop, side-by-side footer on mobile) */}
+                  <div className="flex sm:flex-col items-center justify-between sm:justify-between w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10 gap-3 sm:gap-4 flex-shrink-0 sm:min-w-[140px]">
                     {/* Period Badge */}
-                    <div className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-xs font-medium text-slate-300 shadow-sm">
-                      <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                    <div className="inline-flex items-center space-x-1.5 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-[11px] sm:text-xs font-medium text-slate-300 shadow-sm">
+                      <Calendar className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-purple-400" />
                       <span>{item.period}</span>
                     </div>
 
                     {/* Centered University Logo */}
                     {item.logo && (
-                      <div className="my-auto py-2 flex items-center justify-center">
-                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/[0.06] backdrop-blur-xl p-2 border border-white/20 shadow-[0_6px_20px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden hover:scale-105 hover:border-amber-400/40 transition-all duration-300">
+                      <div className="sm:my-auto sm:py-2 flex items-center justify-center">
+                        <div className="w-11 h-11 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-white/[0.06] backdrop-blur-xl p-1.5 sm:p-2 border border-white/20 shadow-[0_6px_20px_rgba(0,0,0,0.35)] flex items-center justify-center overflow-hidden hover:scale-105 hover:border-amber-400/40 transition-all duration-300">
                           <img 
                             src={resolveAsset(item.logo)} 
                             alt={`${item.institution} logo`} 
@@ -808,15 +853,15 @@ export default function App() {
         {/* ==========================================================================
             Projects Showcase Section
             ========================================================================== */}
-        <section id="projects" className="space-y-8 scroll-mt-24">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <section id="projects" className="space-y-6 sm:space-y-8 scroll-mt-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
             <div>
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Featured Engineering Works</h2>
-              <p className="text-slate-400 text-sm mt-1">High-concurrency systems, distributed storage, and polished interfaces.</p>
+              <p className="text-slate-400 text-xs sm:text-sm mt-1">High-concurrency systems, distributed storage, and polished interfaces.</p>
             </div>
 
             {hasManyProjects && (
-              <div className="flex items-center space-x-2.5 px-4 py-1.5 rounded-full liquid-pill-bar self-start sm:self-auto text-xs font-semibold text-slate-300">
+              <div className="flex items-center space-x-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full liquid-pill-bar self-start sm:self-auto text-xs font-semibold text-slate-300">
                 <span className="text-cyan-300 font-bold">Page {safeProjectPage + 1}</span>
                 <span className="text-slate-500">/</span>
                 <span>{totalProjectPages}</span>
@@ -832,14 +877,14 @@ export default function App() {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* Left Navigation Arrow Button */}
+            {/* Desktop Left Navigation Arrow Button (Hidden on mobile to avoid card content overlap) */}
             {hasManyProjects && (
               <button
                 type="button"
                 onClick={handlePrevProjectPage}
                 aria-label="Previous projects"
                 title="Previous projects"
-                className="absolute left-1 sm:-left-5 md:-left-6 lg:-left-8 xl:-left-11 2xl:-left-13 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-full bg-[#030914]/95 hover:bg-[#081b38] border-2 border-cyan-400 hover:border-cyan-300 text-cyan-300 hover:text-white shadow-[0_0_22px_rgba(0,240,255,0.6),0_8px_20px_rgba(0,0,0,0.85)] hover:shadow-[0_0_32px_rgba(0,240,255,0.85),0_10px_25px_rgba(0,0,0,0.95)] flex items-center justify-center backdrop-blur-2xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer ring-2 ring-cyan-400/30"
+                className="hidden sm:flex absolute -left-5 md:-left-6 lg:-left-8 xl:-left-11 2xl:-left-13 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-full bg-[#030914]/95 hover:bg-[#081b38] border-2 border-cyan-400 hover:border-cyan-300 text-cyan-300 hover:text-white shadow-[0_0_22px_rgba(0,240,255,0.6),0_8px_20px_rgba(0,0,0,0.85)] hover:shadow-[0_0_32px_rgba(0,240,255,0.85),0_10px_25px_rgba(0,0,0,0.95)] items-center justify-center backdrop-blur-2xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer ring-2 ring-cyan-400/30"
               >
                 <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 stroke-[2.75] transition-transform hover:-translate-x-0.5 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
               </button>
@@ -900,23 +945,63 @@ export default function App() {
               ))}
             </div>
 
-            {/* Right Navigation Arrow Button */}
+            {/* Desktop Right Navigation Arrow Button (Hidden on mobile) */}
             {hasManyProjects && (
               <button
                 type="button"
                 onClick={handleNextProjectPage}
                 aria-label="Next projects"
                 title="Next projects"
-                className="absolute right-1 sm:-right-5 md:-right-6 lg:-right-8 xl:-right-11 2xl:-right-13 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-full bg-[#030914]/95 hover:bg-[#081b38] border-2 border-cyan-400 hover:border-cyan-300 text-cyan-300 hover:text-white shadow-[0_0_22px_rgba(0,240,255,0.6),0_8px_20px_rgba(0,0,0,0.85)] hover:shadow-[0_0_32px_rgba(0,240,255,0.85),0_10px_25px_rgba(0,0,0,0.95)] flex items-center justify-center backdrop-blur-2xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer ring-2 ring-cyan-400/30"
+                className="hidden sm:flex absolute -right-5 md:-right-6 lg:-right-8 xl:-right-11 2xl:-right-13 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-full bg-[#030914]/95 hover:bg-[#081b38] border-2 border-cyan-400 hover:border-cyan-300 text-cyan-300 hover:text-white shadow-[0_0_22px_rgba(0,240,255,0.6),0_8px_20px_rgba(0,0,0,0.85)] hover:shadow-[0_0_32px_rgba(0,240,255,0.85),0_10px_25px_rgba(0,0,0,0.95)] items-center justify-center backdrop-blur-2xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer ring-2 ring-cyan-400/30"
               >
                 <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 stroke-[2.75] transition-transform hover:translate-x-0.5 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
               </button>
             )}
           </div>
 
-          {/* Pagination Dots Indicator */}
+          {/* Mobile Thumb Navigation Bar & Dots */}
           {hasManyProjects && (
-            <div className="flex items-center justify-center space-x-2.5 pt-3">
+            <div className="flex sm:hidden items-center justify-between pt-3 px-1">
+              <button
+                type="button"
+                onClick={handlePrevProjectPage}
+                aria-label="Previous page"
+                className="liquid-disc px-3.5 py-1.5 rounded-full flex items-center space-x-1 text-cyan-300 border border-cyan-400/40 text-xs font-semibold active:scale-95 cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Prev</span>
+              </button>
+
+              <div className="flex items-center space-x-1.5">
+                {Array.from({ length: totalProjectPages }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentProjectPage(idx)}
+                    aria-label={`Go to project page ${idx + 1}`}
+                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      safeProjectPage === idx
+                        ? 'w-6 bg-cyan-400 shadow-[0_0_10px_rgba(0,240,255,0.85)]'
+                        : 'w-2 bg-white/20 hover:bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleNextProjectPage}
+                aria-label="Next page"
+                className="liquid-disc px-3.5 py-1.5 rounded-full flex items-center space-x-1 text-cyan-300 border border-cyan-400/40 text-xs font-semibold active:scale-95 cursor-pointer"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Desktop Pagination Dots Indicator */}
+          {hasManyProjects && (
+            <div className="hidden sm:flex items-center justify-center space-x-2.5 pt-3">
               {Array.from({ length: totalProjectPages }).map((_, idx) => (
                 <button
                   key={idx}
@@ -936,40 +1021,40 @@ export default function App() {
         {/* ==========================================================================
             Technical Arsenal Section
             ========================================================================== */}
-        <section id="skills" className="liquid-glass rounded-[32px] p-8 sm:p-10 lg:p-12 space-y-8 relative overflow-hidden">
+        <section id="skills" className="liquid-glass rounded-2xl sm:rounded-[32px] p-5 sm:p-10 lg:p-12 space-y-6 sm:space-y-8 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
 
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 sm:gap-4">
             <div>
               <div className="flex items-center space-x-2 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-2">
                 <span className="w-2 h-2 rounded-full liquid-neon-dot" />
                 <span>Core Capabilities & Tooling</span>
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">Technical Arsenal</h2>
-              <p className="text-slate-400 text-sm sm:text-base mt-1 max-w-2xl font-light">
+              <p className="text-slate-400 text-xs sm:text-base mt-1 max-w-2xl font-light">
                 Modern enterprise frameworks, distributed architectures, database engines, and continuous integration workflows.
               </p>
             </div>
-            <div className="text-xs font-medium px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-slate-300 w-fit">
+            <div className="text-xs font-medium px-3 sm:px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-slate-300 w-fit">
               <span className="text-cyan-400 font-bold">{skills.length}</span> Core Technologies
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4 lg:gap-4.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {skills.map((skill, index) => {
               const IconComponent = techIconMap[skill.id] || Code2;
               return (
                 <div 
                   key={skill.id || index} 
-                  className="group relative p-4 sm:p-5 rounded-2xl liquid-pill-bar hover:border-cyan-400/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_-6px_rgba(0,240,255,0.14)] flex flex-col items-center justify-center text-center gap-3 overflow-hidden cursor-default"
+                  className="group relative p-3.5 sm:p-5 rounded-xl sm:rounded-2xl liquid-pill-bar hover:border-cyan-400/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_28px_-6px_rgba(0,240,255,0.14)] flex flex-col items-center justify-center text-center gap-2.5 sm:gap-3 overflow-hidden cursor-default"
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                   
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center p-2.5 bg-white/[0.05] border border-white/10 group-hover:border-cyan-400/40 group-hover:scale-110 group-hover:bg-cyan-500/10 transition-all duration-300 shadow-inner relative z-10">
-                    <IconComponent className="w-6 h-6 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] transition-all" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center p-2 sm:p-2.5 bg-white/[0.05] border border-white/10 group-hover:border-cyan-400/40 group-hover:scale-110 group-hover:bg-cyan-500/10 transition-all duration-300 shadow-inner relative z-10">
+                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] transition-all" />
                   </div>
 
-                  <span className="text-sm font-semibold text-slate-200 group-hover:text-cyan-300 transition-colors tracking-tight relative z-10">
+                  <span className="text-xs sm:text-sm font-semibold text-slate-200 group-hover:text-cyan-300 transition-colors tracking-tight relative z-10">
                     {skill.name}
                   </span>
                 </div>
@@ -981,78 +1066,78 @@ export default function App() {
         {/* ==========================================================================
             Contact Section
             ========================================================================== */}
-        <section id="contact" className="liquid-glass rounded-[32px] p-8 sm:p-10 lg:p-12 relative overflow-hidden">
+        <section id="contact" className="liquid-glass rounded-2xl sm:rounded-[32px] p-5 sm:p-10 lg:p-12 relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[1.5px] liquid-specular-edge" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            <div className="lg:col-span-5 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-start">
+            <div className="lg:col-span-5 space-y-5 sm:space-y-6">
               <div>
                 <span className="text-xs uppercase tracking-wider font-bold px-3.5 py-1.5 rounded-full liquid-active-pill">
                   Get in Touch
                 </span>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-3">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mt-2.5 sm:mt-3">
                   {personalInfo.contactTitle}
                 </h2>
-                <p className="text-slate-300 text-sm sm:text-base mt-2 font-light leading-relaxed">
+                <p className="text-slate-300 text-xs sm:text-base mt-2 font-light leading-relaxed">
                   {personalInfo.contactSubtitle}
                 </p>
               </div>
 
               {/* Quick direct contact info cards */}
-              <div className="space-y-3 pt-2">
+              <div className="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
                 <a 
-                  href={ensureEmail(socialLinks.email)}
-                  className="flex items-center space-x-3.5 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-white transition group cursor-pointer"
+                  href={ensureEmail(personalInfo.email || socialLinks.email)}
+                  className="flex items-center space-x-3 sm:space-x-3.5 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/10 hover:border-cyan-400/40 text-slate-300 hover:text-white transition group cursor-pointer"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition">
-                    <Mail className="w-5 h-5" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 transition flex-shrink-0">
+                    <Mail className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                   </div>
-                  <div className="text-left">
-                    <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Direct Email</div>
-                    <div className="text-sm font-medium text-white">{personalInfo.email}</div>
+                  <div className="text-left min-w-0">
+                    <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Direct Email</div>
+                    <div className="text-xs sm:text-sm font-medium text-white break-all">{personalInfo.email || "sunithkaushalya.pp@gmail.com"}</div>
                   </div>
                 </a>
 
-                <div className="flex items-center space-x-3.5 p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 text-slate-300">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-400/30 flex items-center justify-center text-purple-400">
-                    <MapPin className="w-5 h-5" />
+                <div className="flex items-center space-x-3 sm:space-x-3.5 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/10 text-slate-300">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/10 border border-purple-400/30 flex items-center justify-center text-purple-400 flex-shrink-0">
+                    <MapPin className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                   </div>
-                  <div className="text-left">
-                    <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Location</div>
-                    <div className="text-sm font-medium text-white">{personalInfo.location}</div>
+                  <div className="text-left min-w-0">
+                    <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Location</div>
+                    <div className="text-xs sm:text-sm font-medium text-white">{personalInfo.location}</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <input 
                   type="text" 
                   required
                   placeholder="Your Name" 
-                  className="w-full px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-sm focus:outline-none theme-focus transition"
+                  className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none theme-focus transition"
                 />
                 <input 
                   type="email" 
                   required
                   placeholder="Email Address" 
-                  className="w-full px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-sm focus:outline-none theme-focus transition"
+                  className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none theme-focus transition"
                 />
               </div>
               <textarea 
                 rows={4} 
                 required
                 placeholder="Your Message..." 
-                className="w-full px-4 py-3.5 rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-sm focus:outline-none theme-focus transition resize-none"
+                className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none theme-focus transition resize-none"
               ></textarea>
               
-              <div className="flex items-center justify-between pt-2">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1 sm:pt-2">
                 <button 
                   type="submit" 
-                  className="px-7 py-3.5 rounded-2xl theme-btn-primary font-bold text-sm transition flex items-center space-x-2 cursor-pointer shadow-lg"
+                  className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-2 cursor-pointer shadow-lg"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>Send Message</span>
                 </button>
 
@@ -1070,46 +1155,46 @@ export default function App() {
       </main>
 
       {/* ==========================================================================
-          Bottom Floating Liquid Pill Dock
+          Bottom Floating Liquid Pill Dock (Mobile & Desktop Responsive)
           ========================================================================== */}
-      <aside className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-        <div className="liquid-pill-bar p-2 rounded-full flex items-center space-x-2 shadow-2xl border border-white/20 backdrop-blur-3xl">
+      <aside className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto">
+        <div className="liquid-pill-bar p-1.5 sm:p-2 rounded-full flex items-center space-x-1.5 sm:space-x-2 shadow-2xl border border-white/20 backdrop-blur-3xl">
           
           {/* Active Home Pill */}
           <a
             href="#"
-            className="liquid-active-pill px-4 py-2 rounded-full flex items-center space-x-2 text-xs font-bold"
+            className="liquid-active-pill px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full flex items-center space-x-1.5 text-xs font-bold"
             title="Home"
           >
-            <HomeIcon className="w-4 h-4" />
+            <HomeIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">Home</span>
           </a>
 
           {/* Search Disc */}
           <a
             href="#projects"
-            className="liquid-disc w-10 h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
+            className="liquid-disc w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
             title="Explore Projects"
           >
-            <SearchIcon className="w-4 h-4" />
+            <SearchIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </a>
 
           {/* Skills Disc */}
           <a
             href="#skills"
-            className="liquid-disc w-10 h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
+            className="liquid-disc w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
             title="Technical Skills"
           >
-            <SlidersIcon className="w-4 h-4" />
+            <SlidersIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </a>
 
           {/* Contact Disc */}
           <a
             href="#contact"
-            className="liquid-disc w-10 h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
+            className="liquid-disc w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
             title="Contact"
           >
-            <Mail className="w-4 h-4" />
+            <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </a>
         </div>
       </aside>

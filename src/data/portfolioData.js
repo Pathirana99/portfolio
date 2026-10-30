@@ -9,6 +9,7 @@ export const personalInfo = {
   brandName: "Sunith.dev",
   role: "Full-Stack Developer",
   location: "Galle, SriLanka",
+  email: "sunithkaushalya.pp@gmail.com",
   experienceYears: "3+ Years Exp",
   
   /**
