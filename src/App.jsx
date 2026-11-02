@@ -19,7 +19,8 @@ import {
   Calendar,
   ArrowUpRight,
   Menu,
-  X
+  X,
+  FolderCode
 } from 'lucide-react';
 import { THEMES, DEFAULT_THEME_ID } from './config/themes';
 import { 
@@ -571,8 +572,9 @@ export default function App() {
               </a>
               <a 
                 href="#projects"
-                className="liquid-disc px-4.5 sm:px-5 py-2.5 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-1.5 cursor-pointer hover:text-white"
+                className="liquid-disc px-4.5 sm:px-5 py-2.5 rounded-full text-slate-200 font-medium text-xs sm:text-sm flex items-center space-x-2 cursor-pointer hover:text-white"
               >
+                <FolderCode className="w-4 h-4 text-cyan-400" />
                 <span>Explore Projects</span>
               </a>
             </div>
@@ -1240,22 +1242,13 @@ export default function App() {
             <span className="hidden sm:inline">Home</span>
           </a>
 
-          {/* Search Disc */}
+          {/* Projects Disc */}
           <a
             href="#projects"
             className="liquid-disc w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
             title="Explore Projects"
           >
-            <SearchIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </a>
-
-          {/* Skills Disc */}
-          <a
-            href="#skills"
-            className="liquid-disc w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-slate-300 hover:text-white"
-            title="Technical Skills"
-          >
-            <SlidersIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <FolderCode className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </a>
 
           {/* Contact Disc */}
