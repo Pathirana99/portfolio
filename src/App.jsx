@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import WaterRippleCanvas from './components/WaterRippleCanvas';
 import { techIconMap } from './components/TechIcons';
+import { EMAILJS_CONFIG } from './config/emailjs';
 import { 
   Code2, 
   Cpu, 
@@ -168,6 +170,8 @@ export default function App() {
   const [touchStartX, setTouchStartX] = useState(null);
   const [touchEndX, setTouchEndX] = useState(null);
   const [formStatus, setFormStatus] = useState('');
+  const [formStatusType, setFormStatusType] = useState('success');
+  const [isSending, setIsSending] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [statusToast, setStatusToast] = useState('All Systems Operational');
@@ -276,10 +280,49 @@ export default function App() {
     }
   };
 
-  const handleSubmit = (e) => {
+  // Form ref for EmailJS sendForm
+  const formRef = useRef(null);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormStatus('Message transmitted successfully!');
-    setTimeout(() => setFormStatus(''), 4000);
+    if (!formRef.current) return;
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || EMAILJS_CONFIG.SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || EMAILJS_CONFIG.TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || EMAILJS_CONFIG.PUBLIC_KEY;
+
+    if (!templateId || !publicKey) {
+      setFormStatusType('error');
+      setFormStatus('Please add your EmailJS Template ID and Public Key to .env');
+      setTimeout(() => setFormStatus(''), 6000);
+      return;
+    }
+
+    setIsSending(true);
+    setFormStatusType('info');
+    setFormStatus('Transmitting message...');
+
+    // Automatically synchronize common EmailJS template field aliases
+    const form = formRef.current;
+    if (form.user_name && form.from_name) form.user_name.value = form.from_name.value;
+    if (form.user_email && form.from_email) form.user_email.value = form.from_email.value;
+    if (form.reply_to && form.from_email) form.reply_to.value = form.from_email.value;
+
+    try {
+      await emailjs.sendForm(serviceId, templateId, formRef.current, {
+        publicKey: publicKey
+      });
+      setFormStatusType('success');
+      setFormStatus('Message transmitted successfully! Sunith will get back to you soon.');
+      formRef.current.reset();
+    } catch (error) {
+      console.error('EmailJS transmission error:', error);
+      setFormStatusType('error');
+      setFormStatus(error?.text || 'Transmission failed. Please check your credentials or try again.');
+    } finally {
+      setIsSending(false);
+      setTimeout(() => setFormStatus(''), 7000);
+    }
   };
 
   const handleBellClick = () => {
@@ -1110,16 +1153,25 @@ export default function App() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-3 sm:space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="lg:col-span-7 space-y-3 sm:space-y-4">
+              {/* Hidden field aliases to automatically match standard EmailJS template parameters */}
+              <input type="hidden" name="user_name" />
+              <input type="hidden" name="user_email" />
+              <input type="hidden" name="reply_to" />
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <input 
                   type="text" 
+                  name="from_name"
+                  id="from_name"
                   required
                   placeholder="Your Name" 
                   className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none theme-focus transition"
                 />
                 <input 
                   type="email" 
+                  name="from_email"
+                  id="from_email"
                   required
                   placeholder="Email Address" 
                   className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none theme-focus transition"
@@ -1127,6 +1179,8 @@ export default function App() {
               </div>
               <textarea 
                 rows={4} 
+                name="message"
+                id="message"
                 required
                 placeholder="Your Message..." 
                 className="w-full px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl bg-white/[0.04] border border-white/15 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none theme-focus transition resize-none"
@@ -1135,15 +1189,31 @@ export default function App() {
               <div className="flex flex-wrap items-center justify-between gap-3 pt-1 sm:pt-2">
                 <button 
                   type="submit" 
-                  className="px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-2 cursor-pointer shadow-lg"
+                  disabled={isSending}
+                  className={`px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl sm:rounded-2xl theme-btn-primary font-bold text-xs sm:text-sm transition flex items-center space-x-2 shadow-lg ${
+                    isSending ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer active:scale-95'
+                  }`}
                 >
-                  <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span>Send Message</span>
+                  {isSending ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Transmitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <span>Send Message</span>
+                    </>
+                  )}
                 </button>
 
                 {formStatus && (
-                  <span className="text-xs font-semibold text-cyan-400 flex items-center space-x-1.5 animate-fade-in">
-                    <span className="w-2 h-2 rounded-full liquid-neon-dot" />
+                  <span className={`text-xs font-semibold flex items-center space-x-1.5 animate-fade-in ${
+                    formStatusType === 'error' ? 'text-rose-400' : 'text-cyan-400'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${
+                      formStatusType === 'error' ? 'bg-rose-500 shadow-[0_0_8px_#f43f5e]' : 'liquid-neon-dot'
+                    }`} />
                     <span>{formStatus}</span>
                   </span>
                 )}
