@@ -152,7 +152,7 @@ export const experience = [
     id: 2,
     role: "Associate Software Engineer",
     company: "iTerminal Technologies",
-    period: "Nov 2025 – Present",
+    period: "Nov 2025 – Aug 2026",
     logo: "/companies/iterminal.jpg",
     points: [
       "Developed and maintained full-stack applications using Next.js, Nest.js, Spring Boot, React, and MySQL, delivering scalable, secure, and high-performance systems.",
